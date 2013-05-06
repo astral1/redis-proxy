@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+ROOT_PATH = File.expand_path('..', File.dirname(__FILE__))
+
+# for debugging
+# remove after gem installation
+$:.unshift(File.join(ROOT_PATH, 'lib'))
+
+require 'redis-proxy'
+
+EM::epoll
+EM::kqueue
+EM::run do
+    EM::start_server('0.0.0.0', 6389, RedisFrontend)
+end
