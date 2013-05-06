@@ -17,9 +17,9 @@ Jeweler::Tasks.new do |gem|
   gem.name = "redis-proxy"
   gem.homepage = "http://github.com/astral1/redis-proxy"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "jiung.jeong@nhn.com"
+  gem.summary = %Q{intercept or forward for redis server request}
+  gem.description = %Q{intercept or forward for redis server request}
+  gem.email = "ethernuiel@sanultari.com"
   gem.authors = ["Jeong, Jiung"]
   # dependencies defined in Gemfile
 end
