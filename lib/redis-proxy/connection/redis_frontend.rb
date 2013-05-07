@@ -1,19 +1,19 @@
 class RedisFrontend < EM::Connection
+    @@front_session_count = 0
+    
     def post_init
-        puts 'connect'
+        @@front_session_count += 1
+        puts "Concurrent User - #{@@front_session_count}"
         @backend = EM::connect('localhost', 6379, RedisBackend, self)
     end
 
     def receive_data data
         components = RedisProtocol.parse_request data
-        @backend.send_data data do |response|
-            puts response
-            send_data response
-        end
-        puts RedisProtocol.recognize data
+        @backend.send_data data
     end
 
     def unbind
-        puts 'disconnect'
+        @@front_session_count -= 1
+        puts "Concurrent User - #{@@front_session_count}"
     end
 end
