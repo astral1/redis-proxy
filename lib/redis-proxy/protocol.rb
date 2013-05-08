@@ -18,12 +18,10 @@ module RedisProtocol
     end
 
     def check_request_type(data)
-      delimiter_count = data.count OP_DELIMITER[0]
-      case delimiter_count
-        when delimiter_count > 1
-          :standard
-        else
-          :inline
+      if data.count(OP_DELIMITER[0]) > 1
+        :standard
+      else
+        :inline
       end
     end
 
