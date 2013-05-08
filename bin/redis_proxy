@@ -10,7 +10,7 @@ require 'redis-proxy'
 EM::epoll
 EM::kqueue
 EM::run do
-    Signal.trap('INT'){ EM::stop }
-    Signal.trap('TERM'){ EM::stop }
-    EM::start_server('0.0.0.0', 6389, RedisFrontend)
+  Signal.trap('INT') { EM::stop }
+  Signal.trap('TERM') { EM::stop }
+  EM::start_server('0.0.0.0', 6389, RedisFrontend)
 end
