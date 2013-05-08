@@ -9,25 +9,16 @@ module RedisProtocol
     end
 
     def recognize(data)
-      case check_request_type data
-        when :inline
-          data.split[0]
-        else
-          data.split(OP_DELIMITER)[2]
-      end
+      (check_request_type(data) == :inline) ? data.split[0] : data.split(OP_DELIMITER)[2]
     end
 
     def check_request_type(data)
-      if data.count(OP_DELIMITER[0]) > 1
-        :standard
-      else
-        :inline
-      end
+      (data.start_with? '*') ? :standard : :inline
     end
 
     def standard(data)
       components = []
-      operand_length, payload = operand_length_for data
+      operand_length, payload = operand_length_for data.split(OP_DELIMITER)
       1.upto(operand_length).each do |_|
         data, payload = unpack_payload(payload)
         components << data
@@ -37,7 +28,7 @@ module RedisProtocol
 
     def operand_length_for(data)
       operand_length, payload = next_token data
-      raise 'invalid packet' unless operand_length.start_with? '*'
+      raise "invalid packet : #{operand_length}" unless operand_length.start_with? '*'
       operand_length = operand_length[1..-1].to_i
 
       [operand_length, payload]
@@ -45,7 +36,7 @@ module RedisProtocol
 
     def unpack_payload(payload)
       field_length, payload = next_token payload
-      raise 'invalid length format' unless field_length.start_with? '$'
+      raise "invalid length format : #{field_length}" unless field_length.start_with? '$'
       field_length = field_length[1..-1].to_i
       next_token payload, field_length
     end
@@ -55,15 +46,24 @@ module RedisProtocol
     end
 
     def next_token(data, length = 0)
-      index = length
-      index = data.index OP_DELIMITER if index == 0
-      current_data = data[0...index]
-      raise 'invalid length' unless data[index, OP_DELIMITER.length].eql? "\r\n"
-      next_data = data[(index + OP_DELIMITER.length)..-1]
-
-      [current_data, next_data]
+      if data[0].length == length || length == 0
+        [data[0], data[1..-1]]
+      else
+        multiline_token(data, length)
+      end
     end
 
-    private :next_token, :standard, :inline, :operand_length_for, :unpack_payload
+    def multiline_token(data, length)
+      val, index = '', 0
+      data.each do |token|
+        val.empty? ? val = token : val += "\r\n#{token}"
+        index += 1
+
+        break if val.length == length
+      end
+      [val, data[index..-1]]
+    end
+
+    private :next_token, :standard, :inline, :operand_length_for, :unpack_payload, :multiline_token
   end
 end
