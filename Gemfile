@@ -1,6 +1,10 @@
 source 'http://rubygems.org'
 
 gem 'eventmachine'
+gem 'redis-protocol'
+
+gem 'io_splice' if RbConfig::CONFIG['host_os'] =~ /linux/
+gem 'consistent-hashing'
 
 group :development do
   gem 'rspec'

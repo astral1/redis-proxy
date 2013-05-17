@@ -1,8 +1,12 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    avl_tree (1.1.3)
+    consistent-hashing (0.2.1)
+      avl_tree (>= 1.1.3)
     diff-lcs (1.2.4)
     eventmachine (1.0.3)
+    eventmachine (1.0.3-java)
     git (1.2.5)
     jeweler (1.8.4)
       bundler (~> 1.0)
@@ -10,9 +14,11 @@ GEM
       rake
       rdoc
     json (1.7.7)
+    json (1.7.7-java)
     rake (10.0.4)
     rdoc (4.0.1)
       json (~> 1.4)
+    redis-protocol (0.1.3)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -24,12 +30,15 @@ GEM
     yard (0.8.6.1)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   bundler
+  consistent-hashing
   eventmachine
   jeweler (~> 1.8.4)
   rdoc
+  redis-protocol
   rspec
   yard

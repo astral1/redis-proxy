@@ -8,6 +8,6 @@ class RedisBackend < EM::Connection
   end
 
   def unbind
-    @peer.close_connection_after_writing
+    @peer.close_connection_after_writing unless @peer.nil?
   end
 end

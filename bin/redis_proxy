@@ -7,10 +7,13 @@ $:.unshift(File.join(ROOT_PATH, 'lib'))
 
 require 'redis-proxy'
 
+port = 6389
+port = ARGV[0] if ARGV.length > 0
+
 EM::epoll
 EM::kqueue
 EM::run do
   Signal.trap('INT') { EM::stop }
   Signal.trap('TERM') { EM::stop }
-  EM::start_server('0.0.0.0', 6389, RedisFrontend)
+  EM::start_server('0.0.0.0', port, RedisFrontend)
 end
